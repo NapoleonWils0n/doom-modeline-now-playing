@@ -81,15 +81,15 @@ This will be automatically initialized when first accessed."
   (unless doom-modeline-now-playing-current-provider
     (setq doom-modeline-now-playing-current-provider
           (cond
-           ((and (eq system-type 'gnu/linux)
+           ((and (memq system-type '(gnu/linux berkeley-unix bsd))
                  (require 'doom-modeline-now-playing-playerctl nil t))
             (doom-modeline-now-playing-playerctl-create))
            ((eq system-type 'darwin)
-            (if (and (executable-find "media-control")
-                     (require 'doom-modeline-now-playing-media-control nil t))
-                (doom-modeline-now-playing-media-control-create)
-              (when (require 'doom-modeline-now-playing-osascript nil t)
-                (doom-modeline-now-playing-osascript)))))))
+            (or (and (executable-find "media-control")
+                     (require 'doom-modeline-now-playing-media-control nil t)
+                     (doom-modeline-now-playing-media-control-create))
+                (and (require 'doom-modeline-now-playing-osascript nil t)
+                     (doom-modeline-now-playing-osascript-create)))))))
   doom-modeline-now-playing-current-provider)
 
 ;;
